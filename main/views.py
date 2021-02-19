@@ -2,5 +2,5 @@
 from django.http import HttpResponse
 
 
-def index(request):
-    return HttpResponse("Tech with tim!")
+def index(request, id):
+    return HttpResponse("<h1>%s</h1>" % id)
