@@ -4,5 +4,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('<int:id>', views.index, name='index'), # id from url is passed to views.index
+    path('<str:name>', views.index, name='index'), # name list from url is passed to views.index
 ]
