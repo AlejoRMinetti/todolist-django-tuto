@@ -123,3 +123,6 @@ STATIC_URL = '/static/'
 
 # Style for crispy-forms
 CRISPY_TEMPLATE_PACK="bootstrap4"
+
+# Redirect after login
+LOGIN_REDIRECT_URL = "/"
