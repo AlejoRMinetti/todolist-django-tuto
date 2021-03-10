@@ -1,16 +1,20 @@
 {% extends 'main/base.html' %} {% block title %} Home {% endblock %}
  
 {% block content %}
-<h1>Home Page</h1>
+<h1>ToDoListas</h1>
 
-<h3>
-    <a href="http://127.0.0.1:8000/create/">Create New To Do List</a>
-</h3>
 
-<h3>
-    View ToDoList: <a href="http://127.0.0.1:8000/1">/1</a>
-    <a href="http://127.0.0.1:8000/2">/2</a> ...
-</h3>
+{% if user.is_authenticated %}
+    <h3><a href="http://127.0.0.1:8000/create/">Create New To Do List</a></h3>
+    <h4>Tus ToDoListas:</h4>
+    {% for td in user.todolist.all %}
+        <h5><a href="/{{td.id}}">{{td.name}}</a></h5>
+    {% endfor %}
+{% else %}
+    <h2>Wellcome to ToDoListas!</h2>
+    <h3>Ya tenes cuenta? <a href="/login">Login</a> </h3>
+    <h3>New arround here? <a href="/register">Create Account</a> </h3>
+{% endif %}
 
-</div>
+
 {% endblock %}

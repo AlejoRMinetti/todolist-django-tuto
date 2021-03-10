@@ -8,25 +8,30 @@ from .forms import CreateNewList
 def index(response, id):
     ls = ToDoList.objects.get(id=id)
  
-    if response.method == "POST":
-        print(response.POST)
-        txt = response.POST.get("new") # for add new item with enter
+    if ls in response.user.todolist.all(): # is a list of the user
+
+        if response.method == "POST":
+            print(response.POST)
+            txt = response.POST.get("new") # for add new item with enter
+            
+            if response.POST.get("save") and len(txt) < 2:
+                for item in ls.item_set.all():
+                    if response.POST.get("c" + str(item.id)) == "clicked":
+                        item.complete = True
+                    else:
+                        item.complete = False
+                    item.save()
         
-        if response.POST.get("save") and len(txt) < 2:
-            for item in ls.item_set.all():
-                if response.POST.get("c" + str(item.id)) == "clicked":
-                    item.complete = True
+            elif response.POST.get("newItem") or len(txt) >= 2:
+                if len(txt) >= 2:
+                    ls.item_set.create(text=txt, complete=False)
                 else:
-                    item.complete = False
-                item.save()
+                    print("invalid")
     
-        elif response.POST.get("newItem") or len(txt) >= 2:
-            if len(txt) >= 2:
-                ls.item_set.create(text=txt, complete=False)
-            else:
-                print("invalid")
- 
-    return render(response, "main/list.html", {"ls":ls})
+        return render(response, "main/list.html", {"ls":ls})
+    
+    return render(response, "main/view.html", {"ls":ls})
+
 
 
 def home(response):
@@ -41,6 +46,7 @@ def create(response):
             n = form.cleaned_data["name"]
             t = ToDoList(name=n)
             t.save()
+            response.user.todolist.add(t) # save in the user DB
 
         return HttpResponseRedirect("/%i" %t.id) # go to the new list created
 
@@ -48,3 +54,7 @@ def create(response):
         form = CreateNewList()
 
     return render(response, "main/create.html", {"form":form})
+
+
+def view(response):
+    return render(response, "main/view.html")
